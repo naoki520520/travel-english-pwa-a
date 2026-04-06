@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#6f63ff" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="旅遊英文A" />
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="apple-touch-icon" href="./icons/icon-192.png" />
+  <title>旅遊英文 3000｜A 版</title>
+  <style>
+    :root {
+      --bg1:#070a16; --bg2:#141a38; --glass:rgba(255,255,255,.10); --glass2:rgba(255,255,255,.06);
+      --line:rgba(255,255,255,.16); --text:#f5f7ff; --muted:rgba(255,255,255,.72); --soft:rgba(255,255,255,.48);
+      --accent:#786eff; --accent2:#8de7ff; --ok:#93efc0; --radius:26px; --shadow:0 18px 55px rgba(0,0,0,.36);
+    }
+    * { box-sizing:border-box; }
+    html, body {
+      margin:0; padding:0; min-height:100%;
+      background:
+        radial-gradient(circle at 15% 16%, rgba(120,110,255,.34), transparent 25%),
+        radial-gradient(circle at 82% 14%, rgba(141,231,255,.18), transparent 24%),
+        radial-gradient(circle at 60% 90%, rgba(90,70,255,.22), transparent 24%),
+        linear-gradient(180deg, var(--bg1), var(--bg2));
+      color:var(--text);
+      font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI","Noto Sans TC",sans-serif;
+    }
+    body { padding: max(18px, env(safe-area-inset-top)) 16px max(18px, env(safe-area-inset-bottom)) 16px; }
+    .app { max-width: 980px; margin: 0 auto; }
+    .glass {
+      background: linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.06));
+      border:1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+    .hero, .toolbar, .section { padding:18px; margin-bottom:16px; }
+    h1 { margin:0 0 8px; font-size:clamp(28px, 6vw, 42px); line-height:1.02; letter-spacing:-.03em; }
+    .sub { margin:0; color:var(--muted); line-height:1.75; font-size:14px; }
+    .chips, .row { display:flex; flex-wrap:wrap; gap:10px; }
+    .chip {
+      padding:9px 12px; border-radius:999px; background:rgba(255,255,255,.08);
+      border:1px solid var(--line); color:var(--muted); font-size:13px;
+    }
+    .stats { display:grid; grid-template-columns:repeat(2,1fr); gap:14px; margin-top:16px; }
+    .stat {
+      padding:16px; min-height:146px; border-radius:22px; background:var(--glass2); border:1px solid var(--line);
+      display:flex; flex-direction:column; justify-content:space-between;
+    }
+    .label { font-size:12px; color:var(--soft); letter-spacing:.08em; text-transform:uppercase; }
+    .value { font-size:34px; font-weight:800; letter-spacing:-.03em; }
+    .ring-wrap { position:relative; display:grid; place-items:center; }
+    .ring {
+      width:122px; height:122px; border-radius:50%;
+      background:conic-gradient(var(--accent2) 0deg, var(--accent) 0deg, rgba(255,255,255,.12) 0deg);
+      display:grid; place-items:center;
+    }
+    .ring::before {
+      content:""; width:88px; height:88px; border-radius:50%; background:rgba(10,13,28,.94);
+      border:1px solid rgba(255,255,255,.08);
+    }
+    .ring-center { position:absolute; font-weight:800; }
+    .toolbar-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    input, select, button {
+      width:100%; border-radius:18px; padding:14px 15px; font-size:15px; border:none; outline:none;
+      background:rgba(255,255,255,.08); border:1px solid var(--line); color:var(--text);
+    }
+    select option { background:#141a38; color:#fff; }
+    button {
+      cursor:pointer; font-weight:700;
+      background:linear-gradient(135deg, rgba(120,110,255,.95), rgba(141,231,255,.88));
+      color:#0a1120;
+    }
+    button.ghost { background:rgba(255,255,255,.08); color:var(--text); }
+    .nav-title { font-size:13px; color:var(--soft); text-transform:uppercase; letter-spacing:.12em; margin-bottom:10px; }
+    .alpha-nav {
+      display:grid; grid-template-columns:repeat(6,1fr); gap:8px;
+    }
+    .alpha-btn {
+      text-align:center; padding:10px 0; border-radius:14px; background:rgba(255,255,255,.07);
+      border:1px solid var(--line); color:var(--muted); font-weight:700; cursor:pointer;
+    }
+    .alpha-btn.active { background:linear-gradient(135deg, rgba(120,110,255,.36), rgba(141,231,255,.16)); color:white; }
+    .daily, .quiz, .list-section { margin-bottom:16px; }
+    .box {
+      padding:16px; border-radius:22px; background:rgba(255,255,255,.07); border:1px solid var(--line);
+    }
+    .word { font-size:32px; font-weight:800; letter-spacing:-.03em; margin:6px 0; }
+    .muted { color:var(--muted); line-height:1.75; }
+    .cards { display:grid; gap:12px; }
+    .card {
+      padding:16px; border-radius:22px; background:rgba(255,255,255,.07); border:1px solid var(--line); position:relative; overflow:hidden;
+    }
+    .card::after {
+      content:""; position:absolute; right:-25px; bottom:-30px; width:100px; height:100px;
+      background:radial-gradient(circle, rgba(141,231,255,.22), transparent 68%);
+      pointer-events:none;
+    }
+    .topline { display:flex; justify-content:space-between; gap:10px; align-items:flex-start; }
+    .en { font-size:24px; font-weight:800; letter-spacing:-.03em; }
+    .zh { font-size:16px; margin-top:8px; }
+    .ex { margin-top:8px; font-size:14px; color:var(--muted); line-height:1.75; }
+    .pill {
+      display:inline-flex; padding:7px 10px; border-radius:999px; font-size:12px; color:var(--muted);
+      border:1px solid var(--line); background:rgba(255,255,255,.06);
+    }
+    .mini {
+      width:auto; padding:10px 12px; font-size:13px; border-radius:14px; min-width:unset;
+    }
+    .mini.primary { background:linear-gradient(135deg, rgba(120,110,255,.78), rgba(141,231,255,.48)); color:white; }
+    .quiz-options { display:grid; gap:10px; margin-top:10px; }
+    .quiz-btn {
+      text-align:left; padding:12px 14px; border-radius:16px; border:1px solid var(--line);
+      background:rgba(255,255,255,.06); color:white; cursor:pointer;
+    }
+    .quiz-btn.correct { background:rgba(147,239,192,.12); border-color:rgba(147,239,192,.7); }
+    .quiz-btn.wrong { background:rgba(255,130,130,.12); border-color:rgba(255,130,130,.7); }
+    .footer-note { font-size:12px; color:var(--soft); line-height:1.75; }
+    .empty { text-align:center; color:var(--muted); padding:22px 8px; }
+    @media (min-width: 900px) {
+      .two-col { display:grid; grid-template-columns:1.08fr .92fr; gap:16px; }
+      .toolbar-grid { grid-template-columns:1.4fr 1fr 1fr 1fr 1fr 1fr; }
+      .alpha-nav { grid-template-columns:repeat(13,1fr); }
+      .cards { grid-template-columns:repeat(2,1fr); }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <section class="glass hero">
+      <h1>旅遊英文 3000<br>A 版：自己用強化版</h1>
+      <p class="sub">
+        這版是給「真的要每天拿來背」的人，不是展示殼。已內建旅遊優先詞庫、A-Z 導覽、分類、發音、每日單字、錯題式小測驗與進度保存。
+        先把會用的字打熟，比空喊 3000 還有用。
+      </p>
+      <div class="chips" style="margin-top:14px">
+        <div class="chip">可加入主畫面</div>
+        <div class="chip">支援離線快取</div>
+        <div class="chip">毛玻璃介面</div>
+        <div class="chip">旅遊情境優先</div>
+      </div>
+      <div class="stats">
+        <div class="stat">
+          <div class="label">目前詞庫</div>
+          <div class="value" id="countAll">0</div>
+          <div class="muted">先用高頻字庫啟動，之後可持續擴充。</div>
+        </div>
+        <div class="stat">
+          <div class="label">已學會</div>
+          <div class="value" id="countLearned">0</div>
+          <div class="muted">紀錄存在本機，不用登入。</div>
+        </div>
+        <div class="stat">
+          <div class="label">3000 目標進度</div>
+          <div class="ring-wrap">
+            <div class="ring" id="ring"></div>
+            <div class="ring-center" id="percent">0%</div>
+          </div>
+        </div>
+        <div class="stat">
+          <div class="label">今日建議</div>
+          <div class="value">15</div>
+          <div class="muted">穩定學，比暴衝有效。🙂</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="glass toolbar">
+      <div class="toolbar-grid">
+        <input id="searchInput" placeholder="搜尋英文 / 中文 / 例句" />
+        <select id="categoryFilter"><option value="all">全部分類</option></select>
+        <select id="levelFilter">
+          <option value="all">全部等級</option>
+          <option value="1">Level 1</option>
+          <option value="2">Level 2</option>
+        </select>
+        <select id="statusFilter">
+          <option value="all">全部狀態</option>
+          <option value="learned">只看已學會</option>
+          <option value="unlearned">只看未學會</option>
+        </select>
+        <button id="quizNextBtn">下一題</button>
+        <button id="resetBtn" class="ghost">重設</button>
+      </div>
+    </section>
+
+    <div class="two-col">
+      <div>
+        <section class="glass section">
+          <div class="nav-title">A-Z</div>
+          <div class="alpha-nav" id="alphaNav"></div>
+        </section>
+
+        <section class="glass section daily">
+          <div class="nav-title">今日單字</div>
+          <div class="box">
+            <div class="word" id="dailyWord">airport</div>
+            <div class="muted" id="dailyZh">機場</div>
+            <div class="muted" id="dailyEx">The airport is about thirty minutes from here.</div>
+            <div class="row" style="margin-top:12px">
+              <button class="mini primary" id="dailySpeakBtn">🔊 發音</button>
+              <button class="mini ghost" id="dailyToggleBtn">切換學會</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="glass section list-section">
+          <div class="nav-title">單字列表</div>
+          <div class="muted" id="filterSummary" style="margin-bottom:12px">整理中…</div>
+          <div class="cards" id="cards"></div>
+          <div class="empty" id="emptyState" style="display:none;">目前沒有符合條件的單字。</div>
+        </section>
+      </div>
+
+      <div>
+        <section class="glass section quiz">
+          <div class="nav-title">快速測驗</div>
+          <div class="box">
+            <div class="word" id="quizWord">loading…</div>
+            <div class="muted">請選出正確中文。</div>
+            <div class="quiz-options" id="quizOptions"></div>
+            <div class="muted" id="quizFeedback" style="margin-top:10px"></div>
+          </div>
+        </section>
+
+        <section class="glass section">
+          <div class="nav-title">加入主畫面</div>
+          <div class="box">
+            <div class="muted">
+              iPhone 開法：先把整個資料夾放到可存取位置，再用 Safari 開啟伺服頁面或靜態託管連結。若你只是點檔案預覽，Safari 不一定會完整啟用 PWA 能力。
+            </div>
+            <div class="chips" style="margin-top:12px">
+              <div class="chip">Safari 開啟</div>
+              <div class="chip">分享 → 加入主畫面</div>
+              <div class="chip">離線快取</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="glass section">
+          <div class="nav-title">備註</div>
+          <div class="box">
+            <div class="footer-note">
+              這版先做成你可以每天真的用的 A 版。完整 3000 之後只要沿用同一套結構擴充字庫，不必重做介面。現在先把高頻旅遊英文打穿，這個順序比較像真的要出國，而不是在做表面工程。
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const WORDS = [{"en": "admission", "zh": "門票；入場費", "ex": "Museum admission is free today.", "category": "Sightseeing", "level": 1, "initial": "A"}, {"en": "airline", "zh": "航空公司", "ex": "Which airline are you flying with?", "category": "Flights", "level": 1, "initial": "A"}, {"en": "airport", "zh": "機場", "ex": "The airport is about thirty minutes from here.", "category": "Flights", "level": 1, "initial": "A"}, {"en": "ambulance", "zh": "救護車", "ex": "Please call an ambulance.", "category": "Emergency", "level": 1, "initial": "A"}, {"en": "arrival", "zh": "抵達", "ex": "Please check the arrival board for updates.", "category": "Flights", "level": 1, "initial": "A"}, {"en": "ATM", "zh": "提款機", "ex": "Is there an ATM nearby?", "category": "Money", "level": 1, "initial": "A"}, {"en": "attraction", "zh": "景點", "ex": "This temple is a famous attraction.", "category": "Sightseeing", "level": 1, "initial": "A"}, {"en": "banknote", "zh": "紙鈔", "ex": "Do you have smaller banknotes?", "category": "Money", "level": 1, "initial": "B"}, {"en": "beach", "zh": "海灘", "ex": "The beach is within walking distance.", "category": "Sightseeing", "level": 1, "initial": "B"}, {"en": "bill", "zh": "帳單", "ex": "Could we have the bill, please?", "category": "Food", "level": 1, "initial": "B"}, {"en": "boarding pass", "zh": "登機證", "ex": "Please show your boarding pass at the gate.", "category": "Flights", "level": 1, "initial": "B"}, {"en": "book a room", "zh": "訂房", "ex": "I'd like to book a room for two nights.", "category": "Hotel", "level": 1, "initial": "B"}, {"en": "buffet", "zh": "自助餐", "ex": "Breakfast is served as a buffet.", "category": "Food", "level": 1, "initial": "B"}, {"en": "bus stop", "zh": "公車站", "ex": "Where is the nearest bus stop?", "category": "Transport", "level": 1, "initial": "B"}, {"en": "cab", "zh": "計程車", "ex": "Let's take a cab to the station.", "category": "Transport", "level": 1, "initial": "C"}, {"en": "cafe", "zh": "咖啡館", "ex": "That cafe is popular with tourists.", "category": "Food", "level": 1, "initial": "C"}, {"en": "card", "zh": "信用卡；卡片", "ex": "Can I pay by card?", "category": "Money", "level": 1, "initial": "C"}, {"en": "carry-on", "zh": "隨身行李", "ex": "This bag is my carry-on.", "category": "Flights", "level": 1, "initial": "C"}, {"en": "castle", "zh": "城堡", "ex": "The castle is over six hundred years old.", "category": "Sightseeing", "level": 1, "initial": "C"}, {"en": "change", "zh": "零錢", "ex": "Do you have change for this?", "category": "Money", "level": 1, "initial": "C"}, {"en": "check in", "zh": "辦理入住", "ex": "What time can we check in?", "category": "Hotel", "level": 1, "initial": "C"}, {"en": "check out", "zh": "退房", "ex": "What time do we need to check out?", "category": "Hotel", "level": 1, "initial": "C"}, {"en": "check-in counter", "zh": "報到櫃檯", "ex": "Where is the check-in counter?", "category": "Flights", "level": 1, "initial": "C"}, {"en": "city tour", "zh": "城市導覽", "ex": "We joined a city tour this morning.", "category": "Sightseeing", "level": 1, "initial": "C"}, {"en": "credit card", "zh": "信用卡", "ex": "Do you take credit cards?", "category": "Money", "level": 1, "initial": "C"}, {"en": "currency exchange", "zh": "換匯", "ex": "Where can I find currency exchange?", "category": "Money", "level": 1, "initial": "C"}, {"en": "customs", "zh": "海關", "ex": "We have to go through customs first.", "category": "Flights", "level": 1, "initial": "C"}, {"en": "delayed flight", "zh": "延誤航班", "ex": "Our delayed flight left after midnight.", "category": "Flights", "level": 1, "initial": "D"}, {"en": "departure", "zh": "出發；起飛", "ex": "The departure gate has changed.", "category": "Flights", "level": 1, "initial": "D"}, {"en": "dessert", "zh": "甜點", "ex": "Would you like dessert?", "category": "Food", "level": 1, "initial": "D"}, {"en": "direction", "zh": "方向；指引", "ex": "Could you give me directions?", "category": "Transport", "level": 1, "initial": "D"}, {"en": "discount", "zh": "折扣", "ex": "Is there any discount today?", "category": "Money", "level": 1, "initial": "D"}, {"en": "doctor", "zh": "醫生", "ex": "I need to see a doctor.", "category": "Emergency", "level": 1, "initial": "D"}, {"en": "double room", "zh": "雙人房", "ex": "We reserved a double room.", "category": "Hotel", "level": 1, "initial": "D"}, {"en": "downtown", "zh": "市中心", "ex": "How can I get to downtown?", "category": "Transport", "level": 1, "initial": "D"}, {"en": "drink menu", "zh": "飲料單", "ex": "Could I see the drink menu?", "category": "Food", "level": 1, "initial": "D"}, {"en": "driver", "zh": "司機", "ex": "The driver was very helpful.", "category": "Transport", "level": 1, "initial": "D"}, {"en": "embassy", "zh": "大使館", "ex": "I need to contact the embassy.", "category": "Emergency", "level": 2, "initial": "E"}, {"en": "emergency", "zh": "緊急情況", "ex": "Call this number in case of emergency.", "category": "Emergency", "level": 1, "initial": "E"}, {"en": "English menu", "zh": "英文菜單", "ex": "Could I have an English menu?", "category": "Food", "level": 1, "initial": "E"}, {"en": "entrance", "zh": "入口", "ex": "The entrance is on the left side.", "category": "Sightseeing", "level": 1, "initial": "E"}, {"en": "exit", "zh": "出口", "ex": "The exit is near the platform.", "category": "Sightseeing", "level": 1, "initial": "E"}, {"en": "express train", "zh": "快車", "ex": "Take the express train to the city center.", "category": "Transport", "level": 1, "initial": "E"}, {"en": "fare", "zh": "票價；車資", "ex": "How much is the bus fare?", "category": "Transport", "level": 1, "initial": "F"}, {"en": "ferry", "zh": "渡輪", "ex": "The ferry leaves every hour.", "category": "Transport", "level": 1, "initial": "F"}, {"en": "festival", "zh": "節慶", "ex": "We visited during the lantern festival.", "category": "Sightseeing", "level": 1, "initial": "F"}, {"en": "fork", "zh": "叉子", "ex": "Can I get another fork?", "category": "Food", "level": 1, "initial": "F"}, {"en": "front desk", "zh": "櫃台", "ex": "Please ask the front desk for help.", "category": "Hotel", "level": 1, "initial": "F"}, {"en": "gate", "zh": "登機門", "ex": "The gate opens thirty minutes before departure.", "category": "Flights", "level": 1, "initial": "G"}, {"en": "gift shop", "zh": "禮品店", "ex": "Let's stop by the gift shop.", "category": "Money", "level": 1, "initial": "G"}, {"en": "guesthouse", "zh": "民宿", "ex": "We stayed at a small guesthouse.", "category": "Hotel", "level": 1, "initial": "G"}, {"en": "guide", "zh": "導遊", "ex": "Our guide speaks excellent English.", "category": "Sightseeing", "level": 1, "initial": "G"}, {"en": "guided tour", "zh": "導覽行程", "ex": "The guided tour starts at ten.", "category": "Sightseeing", "level": 1, "initial": "G"}, {"en": "hair dryer", "zh": "吹風機", "ex": "Is there a hair dryer in the room?", "category": "Hotel", "level": 1, "initial": "H"}, {"en": "help", "zh": "幫忙；救命", "ex": "Can you help me, please?", "category": "Emergency", "level": 1, "initial": "H"}, {"en": "heritage site", "zh": "文化遺產地", "ex": "This is a UNESCO heritage site.", "category": "Sightseeing", "level": 2, "initial": "H"}, {"en": "high-speed rail", "zh": "高鐵", "ex": "We'll take the high-speed rail to Kaohsiung.", "category": "Transport", "level": 1, "initial": "H"}, {"en": "hospital", "zh": "醫院", "ex": "Where is the nearest hospital?", "category": "Emergency", "level": 1, "initial": "H"}, {"en": "hotel", "zh": "飯店", "ex": "Our hotel is near the station.", "category": "Hotel", "level": 1, "initial": "H"}, {"en": "housekeeping", "zh": "客房清潔", "ex": "Housekeeping comes every morning.", "category": "Hotel", "level": 1, "initial": "H"}, {"en": "how much", "zh": "多少錢", "ex": "How much is this?", "category": "Money", "level": 1, "initial": "H"}, {"en": "I am lost", "zh": "我迷路了", "ex": "Excuse me, I am lost.", "category": "Emergency", "level": 1, "initial": "I"}, {"en": "I need help", "zh": "我需要幫助", "ex": "Please, I need help.", "category": "Emergency", "level": 1, "initial": "I"}, {"en": "immigration", "zh": "入境查驗", "ex": "Follow the signs to immigration.", "category": "Flights", "level": 1, "initial": "I"}, {"en": "ingredients", "zh": "食材；成分", "ex": "What ingredients are in this dish?", "category": "Food", "level": 2, "initial": "I"}, {"en": "intersection", "zh": "路口", "ex": "Turn left at the intersection.", "category": "Transport", "level": 1, "initial": "I"}, {"en": "jet lag", "zh": "時差反應", "ex": "I had terrible jet lag on the first day.", "category": "Flights", "level": 1, "initial": "J"}, {"en": "key card", "zh": "房卡", "ex": "I forgot my key card in the room.", "category": "Hotel", "level": 1, "initial": "K"}, {"en": "knife", "zh": "刀子", "ex": "I need a knife for the steak.", "category": "Food", "level": 1, "initial": "K"}, {"en": "landmark", "zh": "地標", "ex": "The tower is the city's main landmark.", "category": "Sightseeing", "level": 1, "initial": "L"}, {"en": "laundry service", "zh": "洗衣服務", "ex": "Does the hotel offer laundry service?", "category": "Hotel", "level": 1, "initial": "L"}, {"en": "layover", "zh": "轉機停留", "ex": "We have a three-hour layover in Seoul.", "category": "Flights", "level": 1, "initial": "L"}, {"en": "lobby", "zh": "大廳", "ex": "I'll wait for you in the hotel lobby.", "category": "Hotel", "level": 1, "initial": "L"}, {"en": "local food", "zh": "當地美食", "ex": "I want to try some local food.", "category": "Food", "level": 1, "initial": "L"}, {"en": "luggage tag", "zh": "行李條", "ex": "Keep your luggage tag until you arrive.", "category": "Flights", "level": 1, "initial": "L"}, {"en": "medicine", "zh": "藥", "ex": "Where can I buy medicine?", "category": "Emergency", "level": 1, "initial": "M"}, {"en": "menu", "zh": "菜單", "ex": "Could I see the menu?", "category": "Food", "level": 1, "initial": "M"}, {"en": "metro", "zh": "地鐵", "ex": "The metro is the fastest way downtown.", "category": "Transport", "level": 1, "initial": "M"}, {"en": "monument", "zh": "紀念碑", "ex": "This monument is over a hundred years old.", "category": "Sightseeing", "level": 1, "initial": "M"}, {"en": "museum", "zh": "博物館", "ex": "The museum closes at six.", "category": "Sightseeing", "level": 1, "initial": "M"}, {"en": "napkin", "zh": "餐巾", "ex": "Can I have an extra napkin?", "category": "Food", "level": 1, "initial": "N"}, {"en": "night market", "zh": "夜市", "ex": "Taiwan's night markets are very famous.", "category": "Sightseeing", "level": 1, "initial": "N"}, {"en": "non-smoking room", "zh": "禁菸房", "ex": "We prefer a non-smoking room.", "category": "Hotel", "level": 1, "initial": "N"}, {"en": "one-way ticket", "zh": "單程票", "ex": "I'd like a one-way ticket to Tainan.", "category": "Transport", "level": 1, "initial": "O"}, {"en": "opening hours", "zh": "營業時間", "ex": "What are the opening hours?", "category": "Sightseeing", "level": 1, "initial": "O"}, {"en": "order", "zh": "點餐；訂購", "ex": "Are you ready to order?", "category": "Food", "level": 1, "initial": "O"}, {"en": "passport", "zh": "護照", "ex": "Keep your passport with you at all times.", "category": "Flights", "level": 1, "initial": "P"}, {"en": "pharmacy", "zh": "藥局", "ex": "Is there a pharmacy nearby?", "category": "Emergency", "level": 1, "initial": "P"}, {"en": "photo spot", "zh": "拍照點", "ex": "This bridge is a popular photo spot.", "category": "Sightseeing", "level": 1, "initial": "P"}, {"en": "platform", "zh": "月台", "ex": "Which platform does the train leave from?", "category": "Transport", "level": 1, "initial": "P"}, {"en": "police", "zh": "警察", "ex": "Please call the police.", "category": "Emergency", "level": 1, "initial": "P"}, {"en": "police station", "zh": "警察局", "ex": "Where is the nearest police station?", "category": "Emergency", "level": 2, "initial": "P"}, {"en": "price", "zh": "價格", "ex": "The price is written here.", "category": "Money", "level": 1, "initial": "P"}, {"en": "public transport", "zh": "大眾運輸", "ex": "Public transport here is very convenient.", "category": "Transport", "level": 1, "initial": "P"}, {"en": "rail pass", "zh": "鐵路周遊券", "ex": "A rail pass can save money.", "category": "Transport", "level": 1, "initial": "R"}, {"en": "receipt", "zh": "收據", "ex": "Could I have the receipt, please?", "category": "Food", "level": 1, "initial": "R"}, {"en": "refund", "zh": "退款", "ex": "Can I get a refund for this item?", "category": "Money", "level": 1, "initial": "R"}, {"en": "reservation", "zh": "預約；訂位", "ex": "I have a reservation under Lin.", "category": "Hotel", "level": 1, "initial": "R"}, {"en": "reservation for two", "zh": "兩人訂位", "ex": "I have a reservation for two.", "category": "Food", "level": 1, "initial": "R"}, {"en": "resort", "zh": "度假村", "ex": "The resort has a private beach.", "category": "Hotel", "level": 1, "initial": "R"}, {"en": "restroom", "zh": "洗手間", "ex": "Where is the nearest restroom?", "category": "Emergency", "level": 1, "initial": "R"}, {"en": "room service", "zh": "客房服務", "ex": "Can we order room service?", "category": "Hotel", "level": 1, "initial": "R"}, {"en": "round-trip ticket", "zh": "來回票", "ex": "A round-trip ticket is cheaper.", "category": "Transport", "level": 1, "initial": "R"}, {"en": "salty", "zh": "鹹的", "ex": "This soup is a little salty.", "category": "Food", "level": 1, "initial": "S"}, {"en": "scenic spot", "zh": "風景區", "ex": "This is one of the island's top scenic spots.", "category": "Sightseeing", "level": 1, "initial": "S"}, {"en": "schedule", "zh": "時刻表；行程安排", "ex": "Please check the train schedule.", "category": "Transport", "level": 1, "initial": "S"}, {"en": "seafood", "zh": "海鮮", "ex": "This restaurant is famous for seafood.", "category": "Food", "level": 1, "initial": "S"}, {"en": "security check", "zh": "安檢", "ex": "Please proceed to security check.", "category": "Flights", "level": 1, "initial": "S"}, {"en": "set meal", "zh": "套餐", "ex": "I would like the chicken set meal.", "category": "Food", "level": 1, "initial": "S"}, {"en": "shopping bag", "zh": "購物袋", "ex": "Could I get a shopping bag?", "category": "Money", "level": 1, "initial": "S"}, {"en": "shuttle bus", "zh": "接駁車", "ex": "The hotel provides a free shuttle bus.", "category": "Transport", "level": 1, "initial": "S"}, {"en": "sick", "zh": "不舒服；生病", "ex": "I feel sick.", "category": "Emergency", "level": 1, "initial": "S"}, {"en": "sightseeing", "zh": "觀光", "ex": "We spent the day sightseeing.", "category": "Sightseeing", "level": 1, "initial": "S"}, {"en": "single room", "zh": "單人房", "ex": "A single room is enough for me.", "category": "Hotel", "level": 1, "initial": "S"}, {"en": "size", "zh": "尺寸", "ex": "Do you have this in my size?", "category": "Money", "level": 1, "initial": "S"}, {"en": "souvenir", "zh": "紀念品", "ex": "I bought a souvenir for my family.", "category": "Money", "level": 1, "initial": "S"}, {"en": "spicy", "zh": "辣的", "ex": "Is this dish spicy?", "category": "Food", "level": 1, "initial": "S"}, {"en": "spoon", "zh": "湯匙", "ex": "Could I get a spoon?", "category": "Food", "level": 1, "initial": "S"}, {"en": "station", "zh": "車站", "ex": "The station is five minutes away.", "category": "Transport", "level": 1, "initial": "S"}, {"en": "suite", "zh": "套房", "ex": "They upgraded us to a suite.", "category": "Hotel", "level": 2, "initial": "S"}, {"en": "take away", "zh": "外帶", "ex": "Can I get this to take away?", "category": "Food", "level": 1, "initial": "T"}, {"en": "taxi stand", "zh": "計程車招呼站", "ex": "The taxi stand is outside the terminal.", "category": "Transport", "level": 1, "initial": "T"}, {"en": "terminal", "zh": "航廈", "ex": "Our flight leaves from Terminal 2.", "category": "Flights", "level": 1, "initial": "T"}, {"en": "ticket machine", "zh": "售票機", "ex": "The ticket machine only takes cash.", "category": "Transport", "level": 1, "initial": "T"}, {"en": "ticket office", "zh": "售票處", "ex": "The ticket office opens at nine.", "category": "Sightseeing", "level": 1, "initial": "T"}, {"en": "tourist", "zh": "觀光客", "ex": "Many tourists visit here in spring.", "category": "Sightseeing", "level": 1, "initial": "T"}, {"en": "traffic jam", "zh": "塞車", "ex": "We were stuck in a traffic jam.", "category": "Transport", "level": 1, "initial": "T"}, {"en": "transfer", "zh": "轉乘；轉機", "ex": "You need to transfer at Taipei Main Station.", "category": "Transport", "level": 1, "initial": "T"}, {"en": "turn left", "zh": "左轉", "ex": "Turn left at the next corner.", "category": "Transport", "level": 1, "initial": "T"}, {"en": "turn right", "zh": "右轉", "ex": "Turn right after the bank.", "category": "Transport", "level": 1, "initial": "T"}, {"en": "upgrade", "zh": "升等", "ex": "We were lucky to get an upgrade.", "category": "Flights", "level": 2, "initial": "U"}, {"en": "urgent", "zh": "緊急的", "ex": "I need urgent medical help.", "category": "Emergency", "level": 1, "initial": "U"}, {"en": "vegetarian", "zh": "素食者；素食的", "ex": "Do you have vegetarian options?", "category": "Food", "level": 1, "initial": "V"}, {"en": "viewpoint", "zh": "觀景台", "ex": "The viewpoint offers an amazing sunset.", "category": "Sightseeing", "level": 1, "initial": "V"}, {"en": "visa", "zh": "簽證", "ex": "Do I need a visa for this country?", "category": "Flights", "level": 1, "initial": "V"}, {"en": "visitor center", "zh": "遊客中心", "ex": "Let's ask at the visitor center.", "category": "Sightseeing", "level": 1, "initial": "V"}, {"en": "waiter", "zh": "服務生", "ex": "The waiter brought us extra plates.", "category": "Food", "level": 1, "initial": "W"}, {"en": "wake-up call", "zh": "晨喚服務", "ex": "Can I request a wake-up call at six?", "category": "Hotel", "level": 1, "initial": "W"}, {"en": "walking tour", "zh": "步行導覽", "ex": "We joined a walking tour in Prague.", "category": "Sightseeing", "level": 1, "initial": "W"}, {"en": "wallet", "zh": "錢包", "ex": "Keep your wallet in a safe place.", "category": "Money", "level": 1, "initial": "W"}, {"en": "water bottle", "zh": "水瓶", "ex": "Bring a reusable water bottle.", "category": "Food", "level": 1, "initial": "W"}, {"en": "wifi password", "zh": "Wi‑Fi 密碼", "ex": "What's the wifi password?", "category": "Hotel", "level": 1, "initial": "W"}, {"en": "window seat", "zh": "靠窗座位", "ex": "Can I have a window seat?", "category": "Flights", "level": 1, "initial": "W"}];
+    const STORAGE_KEY = 'travel_english_pwa_a_learned';
+    const QUIZ_KEY = 'travel_english_pwa_a_quiz';
+    const TARGET = 3000;
+    const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+    let activeLetter = 'A';
+
+    const el = id => document.getElementById(id);
+
+    function initCategories() {
+      const cats = [...new Set(WORDS.map(w => w.category))].sort((a,b)=>a.localeCompare(b));
+      cats.forEach(c => {
+        const opt = document.createElement('option');
+        opt.value = c;
+        opt.textContent = c;
+        el('categoryFilter').appendChild(opt);
+      });
+    }
+
+    function getLearned() {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      return new Set(raw ? JSON.parse(raw) : []);
+    }
+
+    function saveLearned(set) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify([...set]));
+    }
+
+    function speak(text) {
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = 'en-US';
+      u.rate = 0.92;
+      speechSynthesis.cancel();
+      speechSynthesis.speak(u);
+    }
+
+    function toggleLearned(word) {
+      const learned = getLearned();
+      if (learned.has(word)) learned.delete(word);
+      else learned.add(word);
+      saveLearned(learned);
+      renderAll();
+    }
+
+    function getFiltered() {
+      const q = el('searchInput').value.trim().toLowerCase();
+      const level = el('levelFilter').value;
+      const category = el('categoryFilter').value;
+      const status = el('statusFilter').value;
+      const learned = getLearned();
+
+      let list = WORDS.filter(w => w.initial === activeLetter);
+      if (q) list = list.filter(w =>
+        w.en.toLowerCase().includes(q) ||
+        w.zh.toLowerCase().includes(q) ||
+        w.ex.toLowerCase().includes(q)
+      );
+      if (level !== 'all') list = list.filter(w => String(w.level) === level);
+      if (category !== 'all') list = list.filter(w => w.category === category);
+      if (status === 'learned') list = list.filter(w => learned.has(w.en));
+      if (status === 'unlearned') list = list.filter(w => !learned.has(w.en));
+      return list.sort((a,b) => a.en.localeCompare(b.en));
+    }
+
+    function renderAlpha() {
+      el('alphaNav').innerHTML = alphabet.map(letter => `
+        <div class="alpha-btn ${letter === activeLetter ? 'active' : ''}" data-letter="${letter}">${letter}</div>
+      `).join('');
+      [...el('alphaNav').querySelectorAll('.alpha-btn')].forEach(btn => {
+        btn.onclick = () => {
+          activeLetter = btn.dataset.letter;
+          renderAll();
+        };
+      });
+    }
+
+    function renderCards() {
+      const list = getFiltered();
+      const learned = getLearned();
+
+      el('cards').innerHTML = list.map(w => `
+        <div class="card">
+          <div class="topline">
+            <div>
+              <div class="en">${w.en}</div>
+              <div class="muted">Level ${w.level} ・ ${w.category}</div>
+            </div>
+            <div class="pill">${learned.has(w.en) ? '已學會' : '未學會'}</div>
+          </div>
+          <div class="zh">${w.zh}</div>
+          <div class="ex">${w.ex}</div>
+          <div class="row">
+            <button class="mini primary" data-speak="${w.en}">🔊 發音</button>
+            <button class="mini ghost" data-toggle="${w.en}">${learned.has(w.en) ? '取消已學會' : '標記已學會'}</button>
+          </div>
+        </div>
+      `).join('');
+
+      el('emptyState').style.display = list.length ? 'none' : 'block';
+
+      [...el('cards').querySelectorAll('[data-speak]')].forEach(btn => btn.onclick = () => speak(btn.dataset.speak));
+      [...el('cards').querySelectorAll('[data-toggle]')].forEach(btn => btn.onclick = () => toggleLearned(btn.dataset.toggle));
+    }
+
+    function renderStats() {
+      const learned = getLearned();
+      el('countAll').textContent = WORDS.length;
+      el('countLearned').textContent = learned.size;
+      const p = Math.round((learned.size / TARGET) * 100);
+      const deg = Math.max(1, Math.round((learned.size / TARGET) * 360));
+      el('percent').textContent = `${p}%`;
+      el('ring').style.background = `conic-gradient(var(--accent2) 0deg, var(--accent) ${deg}deg, rgba(255,255,255,.12) ${deg}deg)`;
+    }
+
+    function renderDaily() {
+      const idx = new Date().getDate() % WORDS.length;
+      const w = WORDS[idx];
+      el('dailyWord').textContent = w.en;
+      el('dailyZh').textContent = `${w.zh} ・ Level ${w.level} ・ ${w.category}`;
+      el('dailyEx').textContent = w.ex;
+      el('dailySpeakBtn').onclick = () => speak(w.en);
+      el('dailyToggleBtn').onclick = () => toggleLearned(w.en);
+    }
+
+    function pickRandom(arr, n) {
+      const copy = [...arr];
+      const out = [];
+      while (copy.length && out.length < n) {
+        const i = Math.floor(Math.random() * copy.length);
+        out.push(copy.splice(i,1)[0]);
+      }
+      return out;
+    }
+
+    function nextQuiz() {
+      const pool = WORDS.filter(w => w.level <= 2);
+      const answer = pool[Math.floor(Math.random() * pool.length)];
+      const distractors = pickRandom(pool.filter(w => w.en !== answer.en), 3).map(x => x.zh);
+      const options = pickRandom([answer.zh, ...distractors], 4);
+      localStorage.setItem(QUIZ_KEY, JSON.stringify({
+        en: answer.en,
+        zh: answer.zh,
+        options
+      }));
+      renderQuiz();
+    }
+
+    function renderQuiz() {
+      const raw = localStorage.getItem(QUIZ_KEY);
+      if (!raw) return nextQuiz();
+      const q = JSON.parse(raw);
+      el('quizWord').textContent = q.en;
+      el('quizFeedback').textContent = '';
+      el('quizOptions').innerHTML = q.options.map(opt => `
+        <button class="quiz-btn" data-opt="${opt}">${opt}</button>
+      `).join('');
+      [...el('quizOptions').querySelectorAll('.quiz-btn')].forEach(btn => {
+        btn.onclick = () => {
+          const correct = btn.dataset.opt === q.zh;
+          if (correct) {
+            btn.classList.add('correct');
+            el('quizFeedback').textContent = `答對。${q.en} = ${q.zh}`;
+            toggleLearned(q.en);
+          } else {
+            btn.classList.add('wrong');
+            [...el('quizOptions').querySelectorAll('.quiz-btn')].forEach(x => {
+              if (x.dataset.opt === q.zh) x.classList.add('correct');
+            });
+            el('quizFeedback').textContent = `答錯。正解是：${q.zh}`;
+          }
+        };
+      });
+    }
+
+    function renderSummary() {
+      const txt = [
+        `字母：${activeLetter}`,
+        `分類：${el('categoryFilter').value === 'all' ? '全部' : el('categoryFilter').value}`,
+        `等級：${el('levelFilter').value === 'all' ? '全部' : 'Level ' + el('levelFilter').value}`,
+        `狀態：${el('statusFilter').options[el('statusFilter').selectedIndex].text}`,
+        `結果：${getFiltered().length} 筆`
+      ].join(' ｜ ');
+      el('filterSummary').textContent = txt;
+    }
+
+    function renderAll() {
+      renderAlpha();
+      renderCards();
+      renderStats();
+      renderDaily();
+      renderSummary();
+    }
+
+    ['searchInput','categoryFilter','levelFilter','statusFilter'].forEach(id => {
+      el(id).addEventListener('input', renderAll);
+      el(id).addEventListener('change', renderAll);
+    });
+
+    el('quizNextBtn').onclick = nextQuiz;
+    el('resetBtn').onclick = () => {
+      if (confirm('確定要清除學習進度與測驗紀錄？')) {
+        localStorage.removeItem(STORAGE_KEY);
+        localStorage.removeItem(QUIZ_KEY);
+        renderAll();
+        renderQuiz();
+      }
+    };
+
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./service-worker.js').catch(() => {});
+      });
+    }
+
+    initCategories();
+    renderAll();
+    renderQuiz();
+  </script>
+</body>
+</html>
